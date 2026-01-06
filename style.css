@@ -1,0 +1,368 @@
+/* =========================
+   Reset & Base
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* 大人かわいい配色 */
+  --primary-color: #e8a1b2;
+  --primary-dark: #de8fa4;
+  --accent-color: #c7b8ea;
+  --accent-light: #f3e8ff;
+
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+
+  --gray-50: #faf7f9;
+  --gray-100: #f5f3f5;
+  --gray-200: #e5e2e5;
+  --gray-300: #d1ccd1;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-900: #111827;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--gray-900);
+  background-color: var(--gray-50);
+}
+
+/* =========================
+   Layout
+========================= */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+.nav-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 999px;
+  color: white;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.app-main {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* =========================
+   Add Task Form
+========================= */
+.add-task-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--gray-300);
+  background: #fafafa;
+  font-size: 1rem;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(232,161,178,0.25);
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* =========================
+   Filter & Sort
+========================= */
+.filter-section {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+}
+
+.filter-group,
+.sort-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-btn,
+.sort-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--gray-300);
+  background: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+/* =========================
+   Task List
+========================= */
+.tasks-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+
+  /* ★ 完了アニメ用 */
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.task-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.task-meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   Due Soon Highlight
+========================= */
+.task-card:has(.today),
+.task-card:has(.soon) {
+  background: linear-gradient(
+    135deg,
+    rgba(199, 184, 234, 0.18),
+    rgba(232, 161, 178, 0.12)
+  );
+  border: 1px solid rgba(199, 184, 234, 0.4);
+}
+
+.task-card.completed:has(.today),
+.task-card.completed:has(.soon) {
+  background: #f5f5f5;
+  border: none;
+}
+
+.today,
+.soon {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(199, 184, 234, 0.25);
+  color: #5b4b8a;
+}
+
+/* =========================
+   Category
+========================= */
+.category {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.category.work {
+  background: #ede9fe;
+  color: #5b4ea3;
+}
+
+.category.study {
+  background: #fdecef;
+  color: #a14a5c;
+}
+
+.category.shopping {
+  background: #f7f2e8;
+  color: #8a6d3b;
+}
+
+/* =========================
+   Priority
+========================= */
+.priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.priority::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.priority-high { color: #d60000; }
+.priority-high::before { background: #d60000; }
+
+.priority-medium { color: #b36b00; }
+.priority-medium::before { background: #f4b400; }
+
+.priority-low { color: #888; }
+.priority-low::before { background: #bbb; }
+
+/* =========================
+   Completed Task UX（★ここが肝）
+========================= */
+.task-card.completed {
+  opacity: 0.5;
+  background-color: #f5f5f5;
+  transform: scale(0.96) translateY(6px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+  animation: complete-pop 0.35s ease;
+}
+
+.task-card.completed .task-title {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.task-card.completed .task-content {
+  color: #aaa;
+}
+
+/* ✔ ふわっと縮むアニメ */
+@keyframes complete-pop {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(0.93) translateY(4px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.96) translateY(6px);
+    opacity: 0.5;
+  }
+}
+
+/* =========================
+   Footer
+========================= */
+.app-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-section {
+    flex-direction: column;
+  }
+
+  .task-card {
+    grid-template-columns: auto 1fr;
+  }
+
+  .task-actions {
+    grid-column: 1 / -1;
+    text-align: right;
+  }
+}

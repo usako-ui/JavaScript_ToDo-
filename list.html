@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タスク一覧</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div class="app-container">
+
+    <header class="app-header">
+      <h1>タスク一覧</h1>
+      <p class="subtitle">登録済みタスクを整理・確認</p>
+      <a href="/index.html" class="nav-link">← 登録画面へ戻る</a>
+    </header>
+
+    <main class="app-main">
+
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>
+            カテゴリ：
+            <select id="listCategory" class="form-select">
+              <option value="all">すべて</option>
+              <option value="work">仕事</option>
+              <option value="study">学習</option>
+              <option value="shopping">買い物</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="sort-group">
+          <label>
+            並び替え：
+            <select id="listSort" class="form-select">
+              <option value="date">期日順</option>
+              <option value="priority">優先度順</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="tasks-section">
+        <div id="tasksList" class="tasks-list"></div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      <p>一覧で全体を見渡そう</p>
+    </footer>
+
+  </div>
+
+  <!-- ★ index.html と完全に同じ読み込み方 -->
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
