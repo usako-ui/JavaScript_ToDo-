@@ -8,6 +8,11 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  preview: {
+    allowedHosts: [
+      'javascript-todoapuri.onrender.com'
+    ]
   }
 })
 
