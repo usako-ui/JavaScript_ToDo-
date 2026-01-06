@@ -45,6 +45,49 @@ async function initGoogleSheets() {
 }
 
 /* =================================================
+   ユーティリティ関数
+================================================= */
+
+/**
+ * 次のタスクIDを生成（3桁の通番、001-999、999の次は001に戻る）
+ */
+async function getNextTaskId() {
+  try {
+    // 既存のタスクを取得
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE
+    })
+
+    const rows = response.data.values || []
+    
+    // ヘッダー行を除いて、既存のタスクIDを取得
+    const existingIds = rows.slice(1)
+      .map(row => row[0]) // A列（タスクID）
+      .filter(id => id && /^\d{1,3}$/.test(id.toString().trim())) // 1-3桁の数字のみ
+      .map(id => parseInt(id.toString().trim(), 10)) // 数値に変換
+
+    if (existingIds.length === 0) {
+      // タスクが存在しない場合は001から開始
+      return '001'
+    }
+
+    // 最大値を取得
+    const maxId = Math.max(...existingIds)
+    
+    // 次のIDを計算（999を超えたら1に戻る）
+    const nextId = (maxId >= 999) ? 1 : maxId + 1
+    
+    // 3桁のゼロパディング
+    return nextId.toString().padStart(3, '0')
+  } catch (error) {
+    console.error('タスクID生成エラー:', error)
+    // エラー時はタイムスタンプベースのIDを返す（フォールバック）
+    return Date.now().toString().slice(-3).padStart(3, '0')
+  }
+}
+
+/* =================================================
    API
 ================================================= */
 
@@ -84,7 +127,8 @@ app.post('/api/tasks', async (req, res) => {
       return res.status(400).json({ error: 'title is required' })
     }
 
-    const id = Date.now().toString()
+    // 3桁の通番IDを生成
+    const id = await getNextTaskId()
 
     const newRow = [
       id,
