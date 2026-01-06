@@ -63,7 +63,7 @@ app.get('/api/tasks', async (req, res) => {
       title: row[1],
       content: row[2] || '',
       dueDate: row[3] || null,
-      completed: row[4] === 'true',
+      completed: row[4] === 'true' || row[4] === true,
       category: row[7] || '',
       priority: row[8] || 'medium'
     }))
@@ -146,7 +146,7 @@ app.put('/api/tasks/:id', async (req, res) => {
       title ?? old[1],
       content ?? old[2],
       dueDate ?? old[3],
-      completed ? 'true' : 'false',
+      completed !== undefined ? (completed ? 'true' : 'false') : old[4],
       old[5],
       old[6],
       category ?? old[7],
