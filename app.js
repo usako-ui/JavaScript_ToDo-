@@ -98,7 +98,13 @@ async function addTask(title, content, dueDate, category, priority) {
       }
 
       editingTaskId = null
-      document.querySelector('.btn-primary').textContent = 'タスクを追加'
+      const submitBtn = document.querySelector('.btn-primary')
+      if (submitBtn) {
+        submitBtn.textContent = 'タスクを追加'
+      }
+      
+      // モーダルを閉じる
+      closeEditModal()
     } else {
       // 追加
       const newTask = await apiRequest('/api/tasks', {
@@ -126,15 +132,56 @@ function startEditTask(id) {
   const task = tasks.find(t => t.id === id)
   if (!task) return
 
-  document.getElementById('taskTitle').value = task.title
-  document.getElementById('taskContent').value = task.content || ''
-  document.getElementById('taskDueDate').value =
-    task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
-  document.getElementById('taskCategory').value = task.category || ''
-  document.getElementById('taskPriority').value = task.priority
+  // 登録画面のフォームがある場合（index.html）
+  const taskTitle = document.getElementById('taskTitle')
+  const taskContent = document.getElementById('taskContent')
+  const taskDueDate = document.getElementById('taskDueDate')
+  const taskCategory = document.getElementById('taskCategory')
+  const taskPriority = document.getElementById('taskPriority')
 
-  editingTaskId = id
-  document.querySelector('.btn-primary').textContent = 'タスクを更新'
+  // 編集モーダルのフォームがある場合（list.html）
+  const editTaskTitle = document.getElementById('editTaskTitle')
+  const editTaskContent = document.getElementById('editTaskContent')
+  const editTaskDueDate = document.getElementById('editTaskDueDate')
+  const editTaskCategory = document.getElementById('editTaskCategory')
+  const editTaskPriority = document.getElementById('editTaskPriority')
+
+  if (taskTitle && taskContent && taskDueDate && taskCategory && taskPriority) {
+    // 登録画面での編集
+    taskTitle.value = task.title
+    taskContent.value = task.content || ''
+    taskDueDate.value = task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
+    taskCategory.value = task.category || ''
+    taskPriority.value = task.priority
+
+    editingTaskId = id
+    const submitBtn = document.querySelector('.btn-primary')
+    if (submitBtn) {
+      submitBtn.textContent = 'タスクを更新'
+    }
+  } else if (editTaskTitle && editTaskContent && editTaskDueDate && editTaskCategory && editTaskPriority) {
+    // 一覧ページでの編集（モーダル表示）
+    editTaskTitle.value = task.title
+    editTaskContent.value = task.content || ''
+    editTaskDueDate.value = task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
+    editTaskCategory.value = task.category || ''
+    editTaskPriority.value = task.priority
+
+    editingTaskId = id
+    const modal = document.getElementById('editModal')
+    if (modal) {
+      modal.style.display = 'flex'
+    }
+  }
+}
+
+/* ========= モーダルを閉じる ========= */
+function closeEditModal() {
+  const modal = document.getElementById('editModal')
+  if (modal) {
+    modal.style.display = 'none'
+    editingTaskId = null
+  }
 }
 
 /* ========= 削除 ========= */
@@ -402,6 +449,40 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
       renderTasks()
     })
   }
+
+  // 編集モーダルのフォーム
+  const editTaskForm = document.getElementById('editTaskForm')
+  if (editTaskForm) {
+    editTaskForm.addEventListener('submit', async e => {
+      e.preventDefault()
+
+      const title = document.getElementById('editTaskTitle').value.trim()
+      if (!title) {
+        alert('タイトルを入力してください')
+        return
+      }
+
+      await addTask(
+        title,
+        document.getElementById('editTaskContent').value.trim(),
+        document.getElementById('editTaskDueDate').value,
+        document.getElementById('editTaskCategory').value,
+        document.getElementById('editTaskPriority').value
+      )
+
+      editTaskForm.reset()
+    })
+  }
+
+  // モーダルの背景クリックで閉じる
+  const modal = document.getElementById('editModal')
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        closeEditModal()
+      }
+    })
+  }
 }
 
 /* ========= 初期化 ========= */
@@ -412,6 +493,7 @@ export async function initTodoApp() {
   window.app = {
     toggleTask,
     deleteTask,
-    startEditTask
+    startEditTask,
+    closeEditModal
   }
 }
