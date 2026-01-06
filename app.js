@@ -7,6 +7,7 @@ let tasks = []
 let currentFilter = 'all'      // all / active / completed
 let currentSort = 'date'       // date / priority
 let currentCategory = 'all'    // all / work / study / shopping
+let currentView = 'register'   // register / list
 let editingTaskId = null
 let isLoading = false
 
@@ -177,13 +178,28 @@ async function toggleTask(id) {
   }
 }
 
-/* ========= フィルタ & ソート（完全独立） ========= */
-function getFilteredAndSortedTasks() {
+/* ========= フィルタ & ソート ========= */
+function getFilteredAndSortedTasks(view) {
   let filtered = [...tasks]
 
-  // カテゴリ
-  if (currentCategory !== 'all') {
-    filtered = filtered.filter(t => t.category === currentCategory)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const oneDay = 86400000
+
+  if (view === 'register') {
+    // 登録画面：直近1週間分だけを対象（過去7日〜未来7日）
+    filtered = filtered.filter(t => {
+      if (!t.dueDate) return false
+      const target = new Date(t.dueDate)
+      target.setHours(0, 0, 0, 0)
+      const diffDays = Math.round((target - today) / oneDay)
+      return diffDays >= -7 && diffDays <= 7
+    })
+  } else {
+    // 一覧画面：全タスクをカテゴリで絞り込み
+    if (currentCategory !== 'all') {
+      filtered = filtered.filter(t => t.category === currentCategory)
+    }
   }
 
   // 完了 / 未完了
@@ -234,7 +250,7 @@ function renderTasks() {
   const list = document.getElementById('tasksList')
   if (!list) return
 
-  const items = getFilteredAndSortedTasks()
+  const items = getFilteredAndSortedTasks(currentView)
 
   if (items.length === 0) {
     list.innerHTML = `<p class="empty-state">タスクはまだありません</p>`
@@ -322,6 +338,8 @@ function setupEventListeners() {
       listView.style.display = 'none'
       linkToRegister.classList.add('nav-link-active')
       linkToList.classList.remove('nav-link-active')
+      currentView = 'register'
+      renderTasks()
     }
 
     const showList = () => {
@@ -329,6 +347,8 @@ function setupEventListeners() {
       listView.style.display = ''
       linkToRegister.classList.remove('nav-link-active')
       linkToList.classList.add('nav-link-active')
+      currentView = 'list'
+      renderTasks()
     }
 
     linkToRegister.addEventListener('click', e => {
