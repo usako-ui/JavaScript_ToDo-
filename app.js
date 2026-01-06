@@ -310,6 +310,38 @@ function setupEventListeners() {
     })
   }
 
+  // 画面切り替え（登録画面 ⇔ 一覧画面）
+  const linkToRegister = document.getElementById('linkToRegister')
+  const linkToList = document.getElementById('linkToList')
+  const registerView = document.getElementById('registerView')
+  const listView = document.getElementById('listView')
+
+  if (linkToRegister && linkToList && registerView && listView) {
+    const showRegister = () => {
+      registerView.style.display = ''
+      listView.style.display = 'none'
+      linkToRegister.classList.add('nav-link-active')
+      linkToList.classList.remove('nav-link-active')
+    }
+
+    const showList = () => {
+      registerView.style.display = 'none'
+      listView.style.display = ''
+      linkToRegister.classList.remove('nav-link-active')
+      linkToList.classList.add('nav-link-active')
+    }
+
+    linkToRegister.addEventListener('click', e => {
+      e.preventDefault()
+      showRegister()
+    })
+
+    linkToList.addEventListener('click', e => {
+      e.preventDefault()
+      showList()
+    })
+  }
+
 // 完了 / 未完了 / すべて
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
