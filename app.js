@@ -132,22 +132,43 @@ function startEditTask(id) {
   const task = tasks.find(t => t.id === id)
   if (!task) return
 
-  // 登録画面のフォームがある場合（index.html）
+  // 現在表示されている画面を確認
+  const registerView = document.getElementById('registerView')
+  const listView = document.getElementById('listView')
+  const isListViewVisible = listView && listView.style.display !== 'none'
+  const isRegisterViewVisible = registerView && registerView.style.display !== 'none'
+
+  // 登録画面のフォーム
   const taskTitle = document.getElementById('taskTitle')
   const taskContent = document.getElementById('taskContent')
   const taskDueDate = document.getElementById('taskDueDate')
   const taskCategory = document.getElementById('taskCategory')
   const taskPriority = document.getElementById('taskPriority')
 
-  // 編集モーダルのフォームがある場合（list.html）
+  // 編集モーダルのフォーム
   const editTaskTitle = document.getElementById('editTaskTitle')
   const editTaskContent = document.getElementById('editTaskContent')
   const editTaskDueDate = document.getElementById('editTaskDueDate')
   const editTaskCategory = document.getElementById('editTaskCategory')
   const editTaskPriority = document.getElementById('editTaskPriority')
 
-  if (taskTitle && taskContent && taskDueDate && taskCategory && taskPriority) {
-    // 登録画面での編集
+  // 一覧画面が表示されている場合、またはlist.htmlの場合 → モーダルで編集
+  if (isListViewVisible || (!registerView && editTaskTitle)) {
+    if (editTaskTitle && editTaskContent && editTaskDueDate && editTaskCategory && editTaskPriority) {
+      editTaskTitle.value = task.title
+      editTaskContent.value = task.content || ''
+      editTaskDueDate.value = task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
+      editTaskCategory.value = task.category || ''
+      editTaskPriority.value = task.priority
+
+      editingTaskId = id
+      const modal = document.getElementById('editModal')
+      if (modal) {
+        modal.style.display = 'flex'
+      }
+    }
+  } else if (isRegisterViewVisible && taskTitle && taskContent && taskDueDate && taskCategory && taskPriority) {
+    // 登録画面が表示されている場合 → 登録画面のフォームで編集
     taskTitle.value = task.title
     taskContent.value = task.content || ''
     taskDueDate.value = task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
@@ -155,22 +176,9 @@ function startEditTask(id) {
     taskPriority.value = task.priority
 
     editingTaskId = id
-    const submitBtn = document.querySelector('.btn-primary')
+    const submitBtn = document.querySelector('#taskForm .btn-primary')
     if (submitBtn) {
       submitBtn.textContent = 'タスクを更新'
-    }
-  } else if (editTaskTitle && editTaskContent && editTaskDueDate && editTaskCategory && editTaskPriority) {
-    // 一覧ページでの編集（モーダル表示）
-    editTaskTitle.value = task.title
-    editTaskContent.value = task.content || ''
-    editTaskDueDate.value = task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : ''
-    editTaskCategory.value = task.category || ''
-    editTaskPriority.value = task.priority
-
-    editingTaskId = id
-    const modal = document.getElementById('editModal')
-    if (modal) {
-      modal.style.display = 'flex'
     }
   }
 }

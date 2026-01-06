@@ -124,6 +124,68 @@
       </footer>
     </div>
 
+    <!-- 編集用モーダル -->
+    <div id="editModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>タスクを編集</h2>
+          <button class="modal-close" onclick="window.app.closeEditModal()">&times;</button>
+        </div>
+        <form id="editTaskForm" class="task-form">
+          <div class="form-group">
+            <input
+              type="text"
+              id="editTaskTitle"
+              placeholder="やることを入力..."
+              required
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <textarea
+              id="editTaskContent"
+              placeholder="内容"
+              rows="2"
+              class="form-textarea"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <input
+                type="datetime-local"
+                id="editTaskDueDate"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <select id="editTaskCategory" class="form-select">
+                <option value="">カテゴリ</option>
+                <option value="work">仕事</option>
+                <option value="study">学習</option>
+                <option value="shopping">買い物</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select id="editTaskPriority" class="form-select">
+                <option value="low">低</option>
+                <option value="medium" selected>中</option>
+                <option value="high">高</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="window.app.closeEditModal()">キャンセル</button>
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>
